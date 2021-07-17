@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_feature_detector/image_feature_detector.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:wordfinderx/src/common/app_colors.dart';
 import 'package:wordfinderx/src/common/app_colors.dart';
@@ -19,7 +21,9 @@ class _ImageScreenState extends State<ImageScreen> {
   var height;
   var width;
   XFile? _imageFile;
-
+  // TransformedImage? _transfomed;
+  String? _filePath;
+  var _testPoint;
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
@@ -57,16 +61,67 @@ class _ImageScreenState extends State<ImageScreen> {
           SizedBox(
             height: 20,
           ),
-          CustomTextButton(
-            buttonWidth: 80,
-            text: 'Select',
-            onTap: () {
-              showPicker(context);
-            },
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CustomTextButton(
+                buttonWidth: 80,
+                text: 'Select',
+                onTap: () {
+                  showPicker(context);
+                },
+              ),
+              SizedBox(width: 10.0),
+              _imageFile != null
+                  ? CustomTextButton(
+                      buttonWidth: 140,
+                      text: 'recognition',
+                      onTap: () {
+                        detectImg();
+                      },
+                    )
+                  : Text(''),
+            ],
+          ),
+          SizedBox(
+            height: 5.0,
+          ),
+          Text(
+            "Calculated values: x: ${_testPoint != null ? _testPoint!.x : "-"}, y: ${_testPoint != null ? _testPoint!.y : "-"}",
           ),
         ],
       ),
     );
+  }
+
+  void detectImg() async {
+    try {
+      // var c = await ImageFeatureDetector.detectRectangles(_filePath);
+      if (_imageFile != null) {
+        var transformed =
+            await ImageFeatureDetector.detectRectangles(_filePath);
+
+        for (int w = 0; w < transformed.contour.length; w++) {
+          print('output print x ${transformed.contour[w].x}');
+          print('output print y  ${transformed.contour[w].y}');
+        }
+        setState(() {
+          // _transfomed = transformed;
+        });
+        // setState(() {
+        //   _contour = c;
+        // });}
+        setState(() {
+          _testPoint = RelativeCoordianteHelper.calculatePointDinstances(
+            Point(x: 0.05, y: 0.05),
+            ImageDimensions(500, 500),
+          );
+        });
+        print('output print 2 ${_testPoint.x}');
+      }
+    } on PlatformException {
+      print("error happened");
+    }
   }
 
   void showPicker(BuildContext context) {
@@ -110,6 +165,7 @@ class _ImageScreenState extends State<ImageScreen> {
     setState(() {
       if (pickedFile != null) {
         _imageFile = pickedFile;
+        _filePath = pickedFile.path;
       }
     });
   }
@@ -125,6 +181,7 @@ class _ImageScreenState extends State<ImageScreen> {
     setState(() {
       if (pickedFile != null) {
         _imageFile = pickedFile;
+        _filePath = pickedFile.path;
       }
     });
   }
