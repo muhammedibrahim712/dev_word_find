@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:edge_detection/edge_detection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_feature_detector/image_feature_detector.dart';
@@ -23,6 +24,8 @@ class _ImageScreenState extends State<ImageScreen> {
   XFile? _imageFile;
   // TransformedImage? _transfomed;
   String? _filePath;
+  String? _imagePath;
+
   var _testPoint;
   @override
   Widget build(BuildContext context) {
@@ -81,6 +84,14 @@ class _ImageScreenState extends State<ImageScreen> {
                       },
                     )
                   : Text(''),
+              SizedBox(
+                width: 5,
+              ),
+              CustomTextButton(
+                buttonWidth: 140,
+                text: 'Select & Scan',
+                onTap: getImage,
+              ),
             ],
           ),
           SizedBox(
@@ -88,6 +99,14 @@ class _ImageScreenState extends State<ImageScreen> {
           ),
           Text(
             "Calculated values: x: ${_testPoint != null ? _testPoint!.x : "-"}, y: ${_testPoint != null ? _testPoint!.y : "-"}",
+          ),
+          SizedBox(
+            height: 5.0,
+          ),
+          Text(
+            'Cropped image path: $_imagePath\n',
+            style: TextStyle(fontSize: 12),
+            maxLines: 2,
           ),
         ],
       ),
@@ -122,6 +141,27 @@ class _ImageScreenState extends State<ImageScreen> {
     } on PlatformException {
       print("error happened");
     }
+  }
+
+  Future<void> getImage() async {
+    String? imagePath;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    // We also handle the message potentially returning null.
+    try {
+      imagePath = (await EdgeDetection.detectEdge);
+      print("$imagePath");
+    } on PlatformException {
+      imagePath = 'Failed to get cropped image path.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _imagePath = imagePath;
+    });
   }
 
   void showPicker(BuildContext context) {
