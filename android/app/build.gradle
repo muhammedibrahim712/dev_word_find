@@ -81,6 +81,7 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.android.support:support-annotations:27.1.1'
     implementation project(path: ':opencv')
+    //implementation project(path:':opencv', configuration: 'default')
 }
 
 apply plugin: 'com.google.gms.google-services'

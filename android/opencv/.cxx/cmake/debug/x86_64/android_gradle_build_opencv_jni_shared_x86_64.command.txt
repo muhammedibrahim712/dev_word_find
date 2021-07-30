@@ -1,0 +1,8 @@
+Executable : /Users/zeeshanmehdi/Library/Android/sdk/cmake/3.6.4111459/bin/cmake
+arguments : 
+--build
+/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/android/opencv/.cxx/cmake/debug/x86_64
+--target
+opencv_jni_shared
+jvmArgs : 
+

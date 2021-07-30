@@ -1,0 +1,41 @@
+
+{
+	"buildFiles" : 
+	[
+		"/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/android/sdk/libcxx_helper/CMakeLists.txt"
+	],
+	"cleanCommands" : 
+	[
+		"/Users/zeeshanmehdi/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/zeeshanmehdi/Documents/flutter\\ projects/progress/word_finder_game-main/android/sdk/.cxx/cmake/release/armeabi-v7a --target clean"
+	],
+	"cppFileExtensions" : [ "cpp" ],
+	"libraries" : 
+	{
+		"opencv_jni_shared-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "opencv_jni_shared",
+			"buildCommand" : "/Users/zeeshanmehdi/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/zeeshanmehdi/Documents/flutter\\ projects/progress/word_finder_game-main/android/sdk/.cxx/cmake/release/armeabi-v7a --target opencv_jni_shared",
+			"buildType" : "release",
+			"files" : 
+			[
+				
+				{
+					"flags" : "  --target=armv7-none-linux-androideabi21 --gcc-toolchain=/Users/zeeshanmehdi/Library/Android/sdk/ndk/20.0.5594570/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/zeeshanmehdi/Library/Android/sdk/ndk/20.0.5594570/toolchains/llvm/prebuilt/darwin-x86_64/sysroot    -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -march=armv7-a -mthumb -Wa,--noexecstack -Wformat -Werror=format-security   -Oz -DNDEBUG  -fPIC    -c ",
+					"src" : "/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/android/sdk/libcxx_helper/dummy.cpp",
+					"workingDirectory" : "/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/android/sdk/.cxx/cmake/release/armeabi-v7a"
+				}
+			],
+			"output" : "/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/android/sdk/.cxx/cmake/release/armeabi-v7a/libopencv_jni_shared.a",
+			"toolchain" : "9990355057292366402"
+		}
+	},
+	"toolchains" : 
+	{
+		"9990355057292366402" : 
+		{
+			"cCompilerExecutable" : "/Users/zeeshanmehdi/Library/Android/sdk/ndk/20.0.5594570/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang",
+			"cppCompilerExecutable" : "/Users/zeeshanmehdi/Library/Android/sdk/ndk/20.0.5594570/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++"
+		}
+	}
+}

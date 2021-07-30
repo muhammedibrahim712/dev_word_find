@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:edge_detection/edge_detection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_feature_detector/image_feature_detector.dart';
@@ -19,6 +18,10 @@ class ImageScreen extends StatefulWidget {
 
 /// State class for SearchScreen widget.
 class _ImageScreenState extends State<ImageScreen> {
+
+  static const MethodChannel _channel = const MethodChannel('tips.word.wordfinderx/image');
+
+
   var height;
   var width;
   XFile? _imageFile;
@@ -115,28 +118,52 @@ class _ImageScreenState extends State<ImageScreen> {
 
   void detectImg() async {
     try {
+
+
       // var c = await ImageFeatureDetector.detectRectangles(_filePath);
       if (_imageFile != null) {
-        var transformed =
-            await ImageFeatureDetector.detectRectangles(_filePath);
+        final Map params = <String, dynamic> {
+          'filePath': _imageFile?.path??null,
+        };
 
-        for (int w = 0; w < transformed.contour.length; w++) {
-          print('output print x ${transformed.contour[w].x}');
-          print('output print y  ${transformed.contour[w].y}');
-        }
+        print('making native call with $params');
+
+        var resp = await _channel.invokeMethod('find_board',params);
+
+        print('received  response');
+
+        print(resp);
+
+        _imageFile = XFile(resp.toString());
+
         setState(() {
-          // _transfomed = transformed;
+
         });
+
+        // var transformed =
+        //     await ImageFeatureDetector.detectRectangles(_filePath);
+        //
+        // for (int w = 0; w < transformed.contour.length; w++) {
+        //   print('output print x ${transformed.contour[w].x}');
+        //   print('output print y  ${transformed.contour[w].y}');
+        // }
         // setState(() {
-        //   _contour = c;
-        // });}
-        setState(() {
-          _testPoint = RelativeCoordianteHelper.calculatePointDinstances(
-            Point(x: 0.05, y: 0.05),
-            ImageDimensions(500, 500),
-          );
-        });
-        print('output print 2 ${_testPoint.x}');
+        //   // _transfomed = transformed;
+        // });
+        // // setState(() {
+        // //   _contour = c;
+        // // });}
+        // setState(() {
+        //   _testPoint = RelativeCoordianteHelper.calculatePointDinstances(
+        //     Point(x: 0.05, y: 0.05),
+        //     ImageDimensions(500, 500),
+        //   );
+        // });
+        // print('output print 2 ${_testPoint.x}');
+        //
+
+
+
       }
     } on PlatformException {
       print("error happened");
@@ -148,8 +175,8 @@ class _ImageScreenState extends State<ImageScreen> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {
-      imagePath = (await EdgeDetection.detectEdge);
-      print("$imagePath");
+      // imagePath = (await EdgeDetection.detectEdge);
+      // print("$imagePath");
     } on PlatformException {
       imagePath = 'Failed to get cropped image path.';
     }
