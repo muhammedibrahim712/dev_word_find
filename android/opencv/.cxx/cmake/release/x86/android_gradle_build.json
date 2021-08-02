@@ -2,11 +2,11 @@
 {
 	"buildFiles" : 
 	[
-		"/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/android/sdk/libcxx_helper/CMakeLists.txt"
+		"/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/android/opencv/libcxx_helper/CMakeLists.txt"
 	],
 	"cleanCommands" : 
 	[
-		"/Users/zeeshanmehdi/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/zeeshanmehdi/Documents/flutter\\ projects/progress/word_finder_game-main/android/sdk/.cxx/cmake/release/x86 --target clean"
+		"/Users/zeeshanmehdi/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/zeeshanmehdi/Documents/flutter\\ projects/progress/word_finder_game-main/android/opencv/.cxx/cmake/release/x86 --target clean"
 	],
 	"cppFileExtensions" : [ "cpp" ],
 	"libraries" : 
@@ -15,18 +15,18 @@
 		{
 			"abi" : "x86",
 			"artifactName" : "opencv_jni_shared",
-			"buildCommand" : "/Users/zeeshanmehdi/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/zeeshanmehdi/Documents/flutter\\ projects/progress/word_finder_game-main/android/sdk/.cxx/cmake/release/x86 --target opencv_jni_shared",
+			"buildCommand" : "/Users/zeeshanmehdi/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/zeeshanmehdi/Documents/flutter\\ projects/progress/word_finder_game-main/android/opencv/.cxx/cmake/release/x86 --target opencv_jni_shared",
 			"buildType" : "release",
 			"files" : 
 			[
 				
 				{
 					"flags" : "  --target=i686-none-linux-android21 --gcc-toolchain=/Users/zeeshanmehdi/Library/Android/sdk/ndk/20.0.5594570/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/zeeshanmehdi/Library/Android/sdk/ndk/20.0.5594570/toolchains/llvm/prebuilt/darwin-x86_64/sysroot    -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security   -O2 -DNDEBUG  -fPIC    -c ",
-					"src" : "/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/android/sdk/libcxx_helper/dummy.cpp",
-					"workingDirectory" : "/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/android/sdk/.cxx/cmake/release/x86"
+					"src" : "/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/android/opencv/libcxx_helper/dummy.cpp",
+					"workingDirectory" : "/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/android/opencv/.cxx/cmake/release/x86"
 				}
 			],
-			"output" : "/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/android/sdk/.cxx/cmake/release/x86/libopencv_jni_shared.a",
+			"output" : "/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/android/opencv/.cxx/cmake/release/x86/libopencv_jni_shared.a",
 			"toolchain" : "9990355057292366402"
 		}
 	},

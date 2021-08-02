@@ -1,4 +1,4 @@
-# Install script for directory: /Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/android/sdk/libcxx_helper
+# Install script for directory: /Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/android/opencv/libcxx_helper
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/android/sdk/.cxx/cmake/release/x86/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/android/opencv/.cxx/cmake/release/x86/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -1,10 +1,10 @@
 Executable : /Users/zeeshanmehdi/Library/Android/sdk/cmake/3.6.4111459/bin/cmake
 arguments : 
--H/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/android/sdk/libcxx_helper
--B/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/android/sdk/.cxx/cmake/release/arm64-v8a
+-H/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/android/opencv/libcxx_helper
+-B/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/android/opencv/.cxx/cmake/release/arm64-v8a
 -DANDROID_ABI=arm64-v8a
 -DANDROID_PLATFORM=android-21
--DCMAKE_LIBRARY_OUTPUT_DIRECTORY=/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/build/sdk/intermediates/cmake/release/obj/arm64-v8a
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/build/opencv/intermediates/cmake/release/obj/arm64-v8a
 -DCMAKE_BUILD_TYPE=Release
 -DANDROID_NDK=/Users/zeeshanmehdi/Library/Android/sdk/ndk/20.0.5594570
 -DCMAKE_TOOLCHAIN_FILE=/Users/zeeshanmehdi/Library/Android/sdk/ndk/20.0.5594570/build/cmake/android.toolchain.cmake
