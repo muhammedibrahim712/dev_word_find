@@ -13,6 +13,7 @@ import org.opencv.android.BaseLoaderCallback
 import org.opencv.android.LoaderCallbackInterface
 import org.opencv.android.OpenCVLoader
 import org.opencv.core.*
+import org.opencv.core.CvType.CV_8UC3
 import org.opencv.imgcodecs.Imgcodecs
 import org.opencv.imgproc.Imgproc
 import org.opencv.imgproc.Imgproc.findContours
@@ -63,6 +64,8 @@ class MainActivity: FlutterActivity() {
     }
 
     fun getSquareSize(contours: List<MatOfPoint>): Int {
+
+
         val values: ArrayList<Int> = ArrayList()
         for (x in contours.indices) {
 
@@ -78,7 +81,7 @@ class MainActivity: FlutterActivity() {
             values.add(w)
             values.add(h)
         }
-        return min(values.toSet().count(), values.count())
+        return max(values.toSet().count(), values.count())
     }
 
 
@@ -87,9 +90,12 @@ class MainActivity: FlutterActivity() {
 
         val image = Imgcodecs.imread(path)
         val image2 = Imgcodecs.imread(path)
+        val tmp_img = Imgcodecs.imread(path)
+        val ori_img = Imgcodecs.imread(path)
+
+
         Log.e("Image", "Image Read");
-        val dstImage = image
-        image.copyTo(dstImage)
+
 
         val image_w = image.cols()
         val image_h = image.rows()
@@ -102,66 +108,48 @@ class MainActivity: FlutterActivity() {
         val top_2nd = top
         val bottom = arrayOf(0, 0, 0, 0)
 
-        val grayImage = dstImage
-
-        dstImage.copyTo(grayImage)
+        val grayImage = tmp_img
 
         Log.e("Gray", "Generating Gray Image")
 
 
         Imgproc.cvtColor(image, grayImage, Imgproc.COLOR_BGR2GRAY)
 
-
-
-
         Log.e("Gray", "Generated")
 
-        val blurImage = dstImage
+        val blurImage = image
         Log.e("Blur", "Generating Blur Image")
 
-        dstImage.copyTo(blurImage)
-
         Imgproc.GaussianBlur(grayImage, blurImage, Size(3.0, 3.0), 0.0)
-
-
-
 
         Log.e("Blur", "Generated")
 
 
         val edges: Mat  = image2
-       // val edges : Mat = grayImage
-
-
 
         Imgproc.Canny(blurImage, edges, 30.0, 90.0)
 
-        //return edges
+        // return edges
 
         Log.e("CANNY", "Generated")
 
         try {
-            var letters = edges;
-            edges.copyTo(letters)
-
+            var letters = tmp_img
+            Imgproc.rectangle(letters, Point(0.0, 0.0),Point(image_w.toDouble(), image_h.toDouble()), Scalar(0.0,0.0),Imgproc.FILLED)
+            //letters =  Mat.zeros(Size(edges.cols().toDouble(),edges.rows().toDouble()),CV_8UC3)
             //Imgproc.adaptiveThreshold(image, dstImage, 255.0, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 11, 2)
-
-
-//            letters = Mat()
-//
-//
-//
 
             Log.e("copied", "Generated")
             val hierarchy = Mat()
 
             var contours: List<MatOfPoint> = ArrayList()
 
-
             findContours(edges, contours, hierarchy, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE)
 
-
+            //contours 0
             Log.e("Contours", contours.count().toString())
+
+            var cnt = 0
 
             for (l in contours.indices) {
 
@@ -177,15 +165,23 @@ class MainActivity: FlutterActivity() {
                     val y = rect.y
 
 
-                    val rect_aspect = w/h
+                    val rect_aspect = w/(h).toDouble()
 
-                    var contour_squareness = Imgproc.contourArea(value)/(w*h)
+                    var contour_squareness = Imgproc.contourArea(value)/(w*h).toDouble()
 
 
+                    Log.e("rect-sq", "rect_aspect : $rect_aspect    squaireness : $contour_squareness")
 
-                    if(rect_aspect>0.90 && rect_aspect<1.1 && w>image_w/20 && w<image_w/10 && contour_squareness>0.85 && contour_squareness<1.15 )
-                        Imgproc.rectangle(letters, Point(x.toDouble(),y.toDouble()),Point((x+w-1).toDouble(),(y+h-1).toDouble()), Scalar(0.0,255.0),-1)
+                    // pls log rect_aspect and contour_squareness
 
+                    if(rect_aspect>0.90 && rect_aspect<1.1 && w>image_w/20.0 && w<image_w/10.0 && contour_squareness>0.85 && contour_squareness<1.15 ) {
+                        // log "-----------------------------------------------------------------------------------"
+                        Imgproc.rectangle(letters, Point(x.toDouble(), y.toDouble()), Point((x + w - 1).toDouble(), (y + h - 1).toDouble()), Scalar(0.0, 255.0), -1)
+                        //Imgproc.rectangle(ori_img, Point(x.toDouble(), y.toDouble()), Point((x + w ).toDouble(), (y + h).toDouble()), Scalar(0.0, 255.0,0.0), 2)
+                        cnt++
+
+                        Log.e("in", "i am inside if check")//check this
+                    }
 
 
                 } catch (e: Exception) {
@@ -193,17 +189,16 @@ class MainActivity: FlutterActivity() {
                 }
             }
 
+            Log.e("count", "$cnt")
 
 
             findContours(letters, contours, hierarchy, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE)
 
 
-
-
             Log.e("Contours", contours.count().toString())
             //find biggest
 
-            val squareSize = 19
+            val squareSize = getSquareSize(contours)
             Log.e("square", squareSize.toString())
             try {
                 //find biggest
@@ -307,7 +302,7 @@ class MainActivity: FlutterActivity() {
 
             Log.e("image","cols : ${image.cols()}  rows : ${image.rows()}")
 
-            return Mat(image, Rect(xo*-1,yo,xf, yf))
+            return Mat(image, Rect(xo,yo,xf, yf))
 
 
         }catch (e: Exception){

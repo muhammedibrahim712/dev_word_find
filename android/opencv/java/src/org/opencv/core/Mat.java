@@ -115,6 +115,8 @@ public class Mat {
 
     // javadoc: Mat::Mat(m, roi)
     public Mat(Mat m, Rect roi) {
+        //which paramters you to make zero ?
+        // the image should be black board if we initialized as 0
         nativeObj = n_Mat(m.nativeObj, roi.y, roi.y + roi.height, roi.x, roi.x + roi.width);
     }
 
