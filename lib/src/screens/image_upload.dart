@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_feature_detector/image_feature_detector.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:wordfinderx/src/common/app_colors.dart';
 import 'package:wordfinderx/src/common/app_colors.dart';

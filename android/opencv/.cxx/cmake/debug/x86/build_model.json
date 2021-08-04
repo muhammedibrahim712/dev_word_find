@@ -5,6 +5,7 @@
       "sdkFolder": "/Users/zeeshanmehdi/Library/Android/sdk",
       "isNativeCompilerSettingsCacheEnabled": false,
       "isBuildOnlyTargetAbiEnabled": true,
+      "ideBuildTargetAbi": "x86",
       "splitsAbiFilterSet": [],
       "intermediatesFolder": "/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/build/opencv/intermediates",
       "gradleModulePathName": ":opencv",
@@ -41,10 +42,7 @@
     "gradleBuildOutputFolder": "/Users/zeeshanmehdi/Documents/flutter projects/progress/word_finder_game-main/android/opencv/.cxx/cxx/debug",
     "isDebuggableEnabled": true,
     "validAbiList": [
-      "ARMEABI_V7A",
-      "ARM64_V8A",
-      "X86",
-      "X86_64"
+      "X86"
     ],
     "buildTargetSet": [
       "opencv_jni_shared"

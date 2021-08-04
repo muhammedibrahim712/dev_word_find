@@ -9,18 +9,20 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
-import org.opencv.core.Mat
-import org.opencv.core.MatOfPoint
-import org.opencv.core.Rect
-import org.opencv.core.Size
+import org.opencv.android.BaseLoaderCallback
+import org.opencv.android.LoaderCallbackInterface
+import org.opencv.android.OpenCVLoader
+import org.opencv.core.*
 import org.opencv.imgcodecs.Imgcodecs
 import org.opencv.imgproc.Imgproc
 import org.opencv.imgproc.Imgproc.findContours
 import java.io.File
 import java.lang.Math.abs
+import java.lang.Math.min
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.max
+
 
 class MainActivity: FlutterActivity() {
     companion object {
@@ -45,7 +47,7 @@ class MainActivity: FlutterActivity() {
 
                 Log.e("Path", imagePath.toString())
 
-                val result1 :Mat = findBoard(imagePath)
+                val result1 : Mat = findBoard(imagePath)
                 val outputDir = cacheDir.absolutePath
                 val cannyFilename = outputDir + File.separator + "image"+ UUID.randomUUID().toString() +  "." +"png"
 
@@ -61,7 +63,7 @@ class MainActivity: FlutterActivity() {
     }
 
     fun getSquareSize(contours: List<MatOfPoint>): Int {
-        var values: ArrayList<Int> = ArrayList<Int>();
+        val values: ArrayList<Int> = ArrayList()
         for (x in contours.indices) {
 
             val value : MatOfPoint = contours[x]
@@ -70,13 +72,13 @@ class MainActivity: FlutterActivity() {
 
             val w = rect.width
             val h = rect.height
-            val x = rect.x;
-            val y = rect.y;
+            val x = rect.x
+            val y = rect.y
 
             values.add(w)
             values.add(h)
         }
-        return max(values.toSet().count(), values.count())
+        return min(values.toSet().count(), values.count())
     }
 
 
@@ -89,8 +91,10 @@ class MainActivity: FlutterActivity() {
         val dstImage = image
         image.copyTo(dstImage)
 
-        val image_w = image.width()
-        val image_h = image.height()
+        val image_w = image.cols()
+        val image_h = image.rows()
+
+        Log.e("Gray", image_w.toString() + " " + image_h.toString())
 
         val left = arrayOf(image_w, 0, 0, 0)
         val right = arrayOf(0, 0, 0, 0)
@@ -98,12 +102,15 @@ class MainActivity: FlutterActivity() {
         val top_2nd = top
         val bottom = arrayOf(0, 0, 0, 0)
 
-        val grayImage= dstImage
+        val grayImage = dstImage
+
+        dstImage.copyTo(grayImage)
 
         Log.e("Gray", "Generating Gray Image")
 
 
-      //  Imgproc.cvtColor(image, grayImage, Imgproc.COLOR_GRAY2BGR555)
+        Imgproc.cvtColor(image, grayImage, Imgproc.COLOR_BGR2GRAY)
+
 
 
 
@@ -112,7 +119,10 @@ class MainActivity: FlutterActivity() {
         val blurImage = dstImage
         Log.e("Blur", "Generating Blur Image")
 
+        dstImage.copyTo(blurImage)
+
         Imgproc.GaussianBlur(grayImage, blurImage, Size(3.0, 3.0), 0.0)
+
 
 
 
@@ -122,6 +132,8 @@ class MainActivity: FlutterActivity() {
         val edges: Mat  = image2
        // val edges : Mat = grayImage
 
+
+
         Imgproc.Canny(blurImage, edges, 30.0, 90.0)
 
         //return edges
@@ -129,25 +141,70 @@ class MainActivity: FlutterActivity() {
         Log.e("CANNY", "Generated")
 
         try {
-            val letters = edges;
+            var letters = edges;
             edges.copyTo(letters)
 
             //Imgproc.adaptiveThreshold(image, dstImage, 255.0, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 11, 2)
 
 
+//            letters = Mat()
+//
+//
+//
+
             Log.e("copied", "Generated")
             val hierarchy = Mat()
-            val contours: List<MatOfPoint> = ArrayList()
+
+            var contours: List<MatOfPoint> = ArrayList()
+
+
+            findContours(edges, contours, hierarchy, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE)
+
+
+            Log.e("Contours", contours.count().toString())
+
+            for (l in contours.indices) {
+
+                try {
+
+                    val value: MatOfPoint = contours[l]
+
+                    val rect: Rect = Imgproc.boundingRect(value)
+
+                    val w = rect.width
+                    val h = rect.height
+                    val x = rect.x
+                    val y = rect.y
+
+
+                    val rect_aspect = w/h
+
+                    var contour_squareness = Imgproc.contourArea(value)/(w*h)
+
+
+
+                    if(rect_aspect>0.90 && rect_aspect<1.1 && w>image_w/20 && w<image_w/10 && contour_squareness>0.85 && contour_squareness<1.15 )
+                        Imgproc.rectangle(letters, Point(x.toDouble(),y.toDouble()),Point((x+w-1).toDouble(),(y+h-1).toDouble()), Scalar(0.0,255.0),-1)
+
+
+
+                } catch (e: Exception) {
+                    Log.e("loop1", e.toString())
+                }
+            }
+
+
 
             findContours(letters, contours, hierarchy, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE)
 
 
 
-            Log.e("Contours", "Generated")
+
+            Log.e("Contours", contours.count().toString())
             //find biggest
 
-            val squareSize = getSquareSize(contours)
-
+            val squareSize = 19
+            Log.e("square", squareSize.toString())
             try {
                 //find biggest
                 for (l in contours.indices) {
@@ -158,7 +215,7 @@ class MainActivity: FlutterActivity() {
 
                         val rect: Rect = Imgproc.boundingRect(value)
 
-                        Log.e("value", "Generated")
+
                         val w = rect.width
                         val h = rect.height
                         val x = rect.x
@@ -169,52 +226,52 @@ class MainActivity: FlutterActivity() {
 
                         val tolerance = (squareSize / 10).toInt() + 1
 
-                        Log.e("tolerance", "Generated")
+
                         if (dif_w <= tolerance && dif_h <= tolerance) {
                             if (x < left[0]) {
-                                left[0] = rect.width
-                                left[1] = rect.height
-                                left[2] = rect.x
-                                left[3] = rect.y
+                                left[0] = x
+                                left[1] = y
+                                left[2] = rect.width
+                                left[3] = rect.height
                             }
 
                             if (x + w > right[0] + right[1]) {
-                                right[0] = rect.width
-                                right[1] = rect.height
-                                right[2] = rect.x
-                                right[3] = rect.y
+                                right[0] = x
+                                right[1] = y
+                                right[2] = rect.width
+                                right[3] = rect.height
                             }
 
                             if (y < top[1]) {
-                                top_2nd[0] = rect.width
-                                top_2nd[1] = rect.height
-                                top_2nd[2] = rect.x
-                                top_2nd[3] = rect.y
-                                top[0] = rect.width
-                                top[1] = rect.height
-                                top[2] = rect.x
-                                top[3] = rect.y;
+                                top_2nd[0] = x
+                                top_2nd[1] = y
+                                top_2nd[2] = rect.width
+                                top_2nd[3] = rect.height
+                                top[0] = x
+                                top[1] = y
+                                top[2] = rect.width
+                                top[3] = rect.height
                             } else if (y < top_2nd[1]) {
-                                top_2nd[0] = rect.width
-                                top_2nd[1] = rect.height
-                                top_2nd[2] = rect.x
-                                top_2nd[3] = rect.y
+                                top_2nd[0] = x
+                                top_2nd[1] = y
+                                top_2nd[2] = rect.width
+                                top_2nd[3] = rect.height
                             }
 
                             if (y + h > bottom[1] + bottom[3]) {
-                                bottom[0] = rect.width
-                                bottom[1] = rect.height
-                                bottom[2] = rect.x
-                                bottom[3] = rect.y
+                                bottom[0] = x
+                                bottom[1] = y
+                                bottom[2] = rect.width
+                                bottom[3] = rect.height
                             }
                         }
                     } catch (e: Exception) {
-                        Log.e("loopexception", e.toString())
+                        Log.e("loopexc", e.toString())
                     }
                 }
 
             }catch (e: Exception){
-                Log.e("outexception", e.toString())
+                Log.e("outexc", e.toString())
             }
             Log.e("loop", "done")
 
@@ -222,6 +279,9 @@ class MainActivity: FlutterActivity() {
          var yo = top_2nd[1];
          var xf = right[0]+right[2]
          var yf = bottom[1]+bottom[3]
+
+         Log.e("dimensions", "x0: $xo  y0: $yo  xf : $xf  yf: $yf  ")
+
 
          val divCells = (xf- xo)/squareSize
 
@@ -243,21 +303,47 @@ class MainActivity: FlutterActivity() {
             Log.e("secondlast", "done")
 
 
-            Log.e("finalvalues",yo.toString()+" "+yf.toString()+" "+xo.toString()+" "+xf.toString())
+            Log.e("finalvalues", "x0: $xo  y0: $yo  xf : $xf  yf: $yf  ")
 
+            Log.e("image","cols : ${image.cols()}  rows : ${image.rows()}")
 
-            return Mat(image, Rect(yo,yf,xo,xf))
-
-
+            return Mat(image, Rect(xo*-1,yo,xf, yf))
 
 
         }catch (e: Exception){
             Log.e("EXCEPTION", e.toString())
-            return blurImage
+            return edges
         }
 
-        return blurImage
+        return edges
 
 
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        if (!OpenCVLoader.initDebug()) {
+            Log.d("OpenCV", "Internal OpenCV library not found. Using OpenCV Manager for initialization")
+            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback)
+        } else {
+            Log.d("OpenCV", "OpenCV library found inside package. Using it!")
+            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS)
+        }
+    }
+
+
+    private val mLoaderCallback: BaseLoaderCallback = object : BaseLoaderCallback(this) {
+        override fun onManagerConnected(status: Int) {
+            when (status) {
+                LoaderCallbackInterface.SUCCESS -> {
+                    Log.i("OpenCV", "OpenCV loaded successfully")
+                    //imageMat = Mat()
+                }
+                else -> {
+                    super.onManagerConnected(status)
+                }
+            }
+        }
     }
 }
